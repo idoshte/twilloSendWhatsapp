@@ -1,0 +1,7 @@
+logging
+Flask
+pandas
+twilio
+fuzzywuzzy
+arcgis
+pandas

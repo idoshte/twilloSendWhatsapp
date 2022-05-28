@@ -2,4 +2,3 @@ Flask
 pandas
 twilio
 fuzzywuzzy
-arcgis

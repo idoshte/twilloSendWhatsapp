@@ -5,7 +5,6 @@ from twilio.twiml.messaging_response import MessagingResponse
 from fuzzywuzzy import fuzz,process
 from arcgis.gis import GIS
 import pandas as pd
-from fuzzywuzzy import fuzz,process
 
 
 # The session object makes use of a secret key.

@@ -1,9 +1,11 @@
 from arcgis.gis import GIS
 import pandas as pd
+from fuzzywuzzy import fuzz,process
 
 portal=GIS(username='kamanData',password='kamandata1234')
 
 #set "max_users" parameters in search() if you have more than 100 users in your portal
+print(fuzz.partial_ratio('מדיניות התגוננות','מדיניות התגוננות שומר החומות, טסט 1'))
 users_all = portal.users.search(query="username:kamanData") 
 list_items = {}
 def get_item(user):

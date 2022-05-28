@@ -1,4 +1,3 @@
-from logging import exception
 from flask import Flask, request, session
 import pandas as pd
 from twilio.twiml.messaging_response import MessagingResponse

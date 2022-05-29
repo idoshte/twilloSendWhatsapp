@@ -53,10 +53,10 @@ def whatsapp():
         resp.message(message)
     if state ==1:
         data = pd.read_csv('allData.csv')
-        data=data[data['type']=='Dashboard'][['id','title']]
+        data=data[['url','title']]
         data['grade'] =data['title'].apply(lambda val: findSimalrties(val,message_input))
-        data=data[data['grade']>80]
-        data=data.sort_values(by=['grade'],ascending=False).head(10)
+        data=data[data['grade']>70]
+        data=data.sort_values(by=['grade'],ascending=False).head(60)
         result = data.shape[0]
         if result == 0:
             message =f"בצער רב לא הצלחתי למצוא תוצר בשם {message_input}. אנא נסה שוב"
@@ -66,7 +66,7 @@ def whatsapp():
         elif result == 1:
             message = 'התוצר המבוקש הינו: '
             message = message + f'{data.iloc[0].title}, כתובתו'
-            message = message +f'https://h-f-c.maps.arcgis.com/apps/dashboards/{data.iloc[0].id}'
+            message = message +f'{data.iloc[0].url}'
             session['state']=0
             resp.message(message)
         else:
@@ -74,7 +74,7 @@ def whatsapp():
             message = 'להלן ההתאמות המובילות: \n'
             for i,val in enumerate(data['title']):
                 message = message + f'{i+1} {val} \n'
-            for val in data['id']:
+            for val in data['url']:
                 options.append(val)
             session['options'] =options
             session['state']=2
@@ -84,7 +84,7 @@ def whatsapp():
             opt =int(message_input)
             if opt <=0:
                 opt =1000
-            message = f"https://h-f-c.maps.arcgis.com/apps/dashboards/{session.get('options')[opt-1]}"
+            message = f"{session.get('options')[opt-1]}"
             resp.message(message)
             session['state']=0
         except Exception:

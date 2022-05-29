@@ -11,30 +11,14 @@ app.config.from_object(__name__)
 
 def findSimalrties(val,mass):
    return fuzz.partial_ratio(mass,val)
-
-# @app.route("/updateuUrl", methods=['GET', 'POST'])
-# def url():
-    # portal=GIS(username='kamanData',password='kamandata1234')
-    # users_all = portal.users.search(query="username:kamanData") 
-    # list_items = {}
-    # def get_item(user):
-    #     content_item = user.items()
-    #     for item in content_item:
-    #         list_items[item.itemid] = item
-    #     folders = user.folders
-    #     for folder in folders :
-    #         folder_items = user.items(folder=folder['title'])
-    #         for item in folder_items:
-    #             list_items[item.itemid] = item
-
-    # for i in range(len(users_all)):
-    #     print(f"extract {users_all[i]} data to excel...")
-    #     get_item(users_all[i])
-
-    # df=pd.DataFrame(list_items)
-    # df=df.transpose()
-    # df.to_csv("allData.csv",index=False,encoding='utf-8')
-    # return 'good request'
+def defineUrl(row):
+    if row['type']=='Dashboard':
+        return f'https://h-f-c.maps.arcgis.com/apps/dashboards/{row[id]}'
+    if row['type']=='Web Map':
+        return f'https://h-f-c.maps.arcgis.com/home/webmap/viewer.html?webmap={row[id]}'
+    if row['url'].isnotna():
+        return row['url']
+    return f'https://h-f-c.maps.arcgis.com/home/item.html?id={row[id]}'
 
 @app.route("/sms", methods=['GET', 'POST'])
 def whatsapp():
@@ -53,9 +37,11 @@ def whatsapp():
         resp.message(message)
     if state ==1:
         data = pd.read_csv('allData.csv')
+
+        data['url']=data.apply(lambda row:defineUrl[row],axis=1)
         data=data[['url','title']]
         data['grade'] =data['title'].apply(lambda val: findSimalrties(val,message_input))
-        data=data[data['grade']>70]
+        data=data[data['grade']>80]
         data=data.sort_values(by=['grade'],ascending=False).head(60)
         result = data.shape[0]
         if result == 0:

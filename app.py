@@ -1,5 +1,7 @@
+from cmath import nan
 from flask import Flask, request, session
 import pandas as pd
+import numpy as np
 from twilio.twiml.messaging_response import MessagingResponse
 from fuzzywuzzy import fuzz,process
 
@@ -11,14 +13,15 @@ app.config.from_object(__name__)
 
 def findSimalrties(val,mass):
    return fuzz.partial_ratio(mass,val)
-def defineUrl(row):
-    if row['type']=='Dashboard':
-        return f'https://h-f-c.maps.arcgis.com/apps/dashboards/{row[id]}'
-    if row['type']=='Web Map':
-        return f'https://h-f-c.maps.arcgis.com/home/webmap/viewer.html?webmap={row[id]}'
-    if row['url'].isnotna():
-        return row['url']
-    return f'https://h-f-c.maps.arcgis.com/home/item.html?id={row[id]}'
+def defineUrl(index,data):
+    if data.isna().iloc[index]['url']== False:
+        return data.iloc[index]['url']
+    if str(data.iloc[index]['type'])=='Dashboard':
+        return f'https://h-f-c.maps.arcgis.com/apps/dashboards/{data.iloc[index]["id"]}'
+    if str(data.iloc[index]['type'])=='Web Map':
+        return f'https://h-f-c.maps.arcgis.com/home/webmap/viewer.html?webmap={data.iloc[index]["id"]}'
+    return f'https://h-f-c.maps.arcgis.com/home/item.html?id={data.iloc[index]["id"]}'
+    
 
 @app.route("/sms", methods=['GET', 'POST'])
 def whatsapp():
@@ -36,8 +39,11 @@ def whatsapp():
         resp.message(message)
     if state ==1:
         data = pd.read_csv('allData.csv')
-
-        data['url']=data.apply(lambda row:defineUrl[row],axis=1)
+        # data['url'] =data.apply(lambda row:defineUrl(row),axis=1)
+        lst =[]
+        for index in range(data.shape[0]):
+            lst.append (defineUrl(index,data))
+        data['url'] = np.array(lst)
         data=data[['url','title']]
         data['grade'] =data['title'].apply(lambda val: findSimalrties(val,message_input))
         data=data[data['grade']>80]

@@ -29,7 +29,7 @@ def whatsapp():
     print(message_input)
     resp = MessagingResponse()
     state = session.get('state', 0)
-    
+    state=0
     # counter += 1
     if state == 0:
         message ="שלום לך, שמי הוא בוטי בוט ארכיטקט המידע של ענף אגמים. אשמח לסייע לך במציאת תוצרי מיצוי מידע אנא הקלד מה ברצונך לחפש"

@@ -42,7 +42,7 @@ def whatsapp():
         data=data[['url','title']]
         data['grade'] =data['title'].apply(lambda val: findSimalrties(val,message_input))
         data=data[data['grade']>80]
-        data=data.sort_values(by=['grade'],ascending=False).head(60)
+        data=data.sort_values(by=['grade'],ascending=False).head(20)
         result = data.shape[0]
         if result == 0:
             message =f"בצער רב לא הצלחתי למצוא תוצר בשם {message_input}. אנא נסה שוב"
